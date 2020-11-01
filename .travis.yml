@@ -1,0 +1,25 @@
+language: generic
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t prajwal-wale/react-test -f ./client/Dockerfile.dev .
+
+script:
+  - docker run -e CI=true prajwal-wale/react-test npm run test -- --coverage
+
+after_success:
+  - docker build -t prajwal-wale/multi-client ./client .
+  - docker build -t prajwal-wale/multi-nginx ./nginx .
+  - docker build -t prajwal-wale/multi-server ./server .
+  - docker build -t prajwal-wale/multi-worker ./worker .
+  # Login to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # push to docker hub
+  - docker push prajwal-wale/multi-client
+  - docker push prajwal-wale/multi-nginx
+  - docker push prajwal-wale/multi-server
+  - docker push prajwal-wale/multi-worker
