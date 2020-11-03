@@ -1,25 +1,24 @@
-language: generic
-
 sudo: required
+language: generic
 
 services:
   - docker
 
 before_install:
-  - docker build -t prajwal-wale/react-test -f ./client/Dockerfile.dev .
+  - docker build -t prajwalvs15/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true prajwal-wale/react-test npm run test -- --coverage
+  - docker run -e CI=true prajwalvs15/react-test npm test
 
 after_success:
-  - docker build -t prajwal-wale/multi-client ./client .
-  - docker build -t prajwal-wale/multi-nginx ./nginx .
-  - docker build -t prajwal-wale/multi-server ./server .
-  - docker build -t prajwal-wale/multi-worker ./worker .
-  # Login to docker CLI
+  - docker build -t prajwalvs15/multi-client ./client
+  - docker build -t prajwalvs15/multi-nginx ./nginx
+  - docker build -t prajwalvs15/multi-server ./server
+  - docker build -t prajwalvs15/multi-worker ./worker
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  # push to docker hub
-  - docker push prajwal-wale/multi-client
-  - docker push prajwal-wale/multi-nginx
-  - docker push prajwal-wale/multi-server
-  - docker push prajwal-wale/multi-worker
+  # Take those images and push them to docker hub
+  - docker push prajwalvs15/multi-client
+  - docker push prajwalvs15/multi-nginx
+  - docker push prajwalvs15/multi-server
+  - docker push prajwalvs15/multi-worker
